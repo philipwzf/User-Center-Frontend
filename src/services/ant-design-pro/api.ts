@@ -41,6 +41,18 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   });
 }
 
+/** 登录接口 POST /api/user/login */
+export async function userUpdate(body: API.CurrentUser, options?: { [key: string]: any }) {
+  return request<API.BaseResponse<API.UpdateResult>>('/api/user/update', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** 搜索用户 GET /api/user/search */
 export async function searchUsers(options?: { [key: string]: any }) {
   return request<API.BaseResponse<API.NoticeIconList>>('/api/user/search', {

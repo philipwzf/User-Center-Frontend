@@ -32,6 +32,8 @@ declare namespace API {
   };
   type RegisterResult = number;
 
+  type UpdateResult = number;
+
   type PageParams = {
     current?: number;
     pageSize?: number;

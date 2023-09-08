@@ -1,7 +1,8 @@
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable, TableDropdown } from '@ant-design/pro-components';
 import { useRef } from 'react';
-import {searchUsers} from "@/services/ant-design-pro/api";
+import {searchUsers, userUpdate} from "@/services/ant-design-pro/api";
+import {message} from "antd";
 
 export const waitTimePromise = async (time: number = 100) => {
   return new Promise((resolve) => {
@@ -16,7 +17,26 @@ export const waitTime = async (time: number = 100) => {
 };
 
 
+const Update = async (user: API.CurrentUser) => {
 
+  try {
+    const res = await userUpdate(user);
+    if(res.code === 0 && res.data>0){
+      //reload the page
+    }else{
+      throw new Error(res.description);
+    }
+    alert('User updated!');
+
+  } catch (error: any) {
+    const defaultLoginFailureMessage = 'update失败，请重试！';
+    message.error(error.message ?? defaultLoginFailureMessage);
+
+    alert('Error updating user');
+
+  }
+
+}
 const columns: ProColumns<API.CurrentUser>[] = [
   {
     dataIndex: 'id',
@@ -90,17 +110,22 @@ const columns: ProColumns<API.CurrentUser>[] = [
     render: (text, record, _, action) => [
       <a
         key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.id);
-          alert(JSON.stringify(record));
-            alert(record.username);
-        }}
+        onClick={() =>{
+            action?.startEditable?.(record.id);
+            //Update(record);
+        }
+
+        }
+
       >
         编辑
       </a>,
       <a href={record.avatarUrl} target="_blank" rel="noopener noreferrer" key="view">
         查看
       </a>,
+      <a onClick={() => {
+        Update(record); // only update after save
+      }}>提交更改</a>,
       <TableDropdown
         key="actionGroup"
         onSelect={() => action?.reload()}
